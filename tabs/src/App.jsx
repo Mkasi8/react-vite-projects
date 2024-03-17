@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import JobInfo from "./JobInfo";
+import BtnContainer from "./BtnContainer";
+const url = "https://course-api.com/react-tabs-project";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+  const [user, setUser] = useState(null);
+  const [currentItem, setItem] = useState(0);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const resp = await fetch(url);
+        // console.log(resp);
+        if (!resp.ok) {
+          setIsError(true);
+          setIsLoading(false);
+          return;
+        }
+
+        const user = await resp.json();
+        setUser(user);
+      } catch (error) {
+        setIsError(true);
+        // console.log(error);
+      }
+      // hide loading
+      setIsLoading(false);
+    };
+    fetchUser();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="center">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+  if (isError) {
+    return <h2>There was an error...</h2>;
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="all-container">
+      <BtnContainer user={user} setItem={setItem} currentItem={currentItem} />
+      <JobInfo user={user} currentItem={currentItem} />
+    </div>
+  );
 }
 
-export default App
+export default App;
