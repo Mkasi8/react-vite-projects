@@ -1,5 +1,5 @@
 //Imports
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { longList } from "./data.js";
 import { FaQuoteLeft } from "react-icons/fa6";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
@@ -19,6 +19,11 @@ const Carousel = () => {
   const nextSlide = () => {
     setIndex((index) => (index + 1) % person.length);
   };
+
+  useEffect(() => {
+    let id = setInterval(nextSlide, 2000);
+    return () => clearInterval(id);
+  }, [index]);
 
   return (
     <div className="slider-container">
