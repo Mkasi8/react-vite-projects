@@ -4,16 +4,29 @@ import { nanoid } from "nanoid";
 
 const Lorem = () => {
   const [count, setCount] = useState(1);
-  const [loremText, setLoremText] = useState(text);
+  const [loremText, setLoremText] = useState([]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    let numP = parseInt(count);
+
+    let slicedText = text.slice(0, count);
+
+    setLoremText(() => slicedText);
+  };
 
   return (
     <>
       <section className="lorem-container">
         <h4>Random text generator</h4>
 
-        <form className="lorem-form">
-          <label htmlFor="numParagraphs">Number of paragraph</label>
+        <form className="lorem-form" onSubmit={handleSubmit}>
+          <label htmlFor="numParagraphs" className="input-label">
+            Number of paragraph
+          </label>
           <input
+            className="form-input"
             type="number"
             min="1"
             max="8"
@@ -27,7 +40,11 @@ const Lorem = () => {
         </form>
         <article className="text-container">
           {loremText.map((textToDisplay) => {
-            return <p key={nanoid()}>{textToDisplay}</p>;
+            return (
+              <p key={nanoid()} className="lorem-paragraph">
+                {textToDisplay}
+              </p>
+            );
           })}
         </article>
       </section>
